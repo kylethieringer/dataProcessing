@@ -11,20 +11,19 @@
 ```
 
 ## **Tracking**
+On the cluster:
 ```
 $ cd /dataserver/user/dataProcessing/tracking
 $ bash tracking.sh /path/to/dataDirectory/
 ```
-This will run inference on videos then create 2 files: 
-
+This will run inference on videos then create 2 files:
 - *000000.mp4.inference.slp*
 - *000000.mp4.inference.cleaned.slp*
 
 The next steps would be to proofread the data and save the files as:
-
 - *000000.mp4.inference.cleaned.proofread.slp*
 
-Once tracks have been proofread, you can export them as an h5 file
+Once tracks have been proofread, you can export them as an h5 file  
 
 Back on the cluster:
 ```
@@ -33,6 +32,7 @@ $ bash export.sh /path/to/dataDirectory/
 ```
 
 ## **Song Segmentation**
+On the cluster:
 ```
 $ cd /dataserver/user/dataProcessing/songSegmentation
 $ bash segment.sh /path/to/dataDirectory/
@@ -47,6 +47,8 @@ The output one of the following:
 This will create a file that has behavioral features, some song information, and vectors to sync video and audio.
 
 Must be done after tracks have been exported and song has been segmented.
+
+On the cluster:
 ```
 $ cd /dataserver/user/dataProcessing/createfeatures
 $ bash process /path/to/dataDirectory/
