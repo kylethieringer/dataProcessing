@@ -56,5 +56,5 @@ Must be done after tracks have been exported and song has been segmented.
 On the cluster:
 ```
 $ cd /dataserver/user/dataProcessing/createfeatures
-$ bash process /path/to/dataDirectory/
+$ bash process.sh /path/to/dataDirectory/
 ```
