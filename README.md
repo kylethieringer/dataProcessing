@@ -39,9 +39,14 @@ $ bash segment.sh /path/to/dataDirectory/
 ```
 This will segment audio using [Murthy Lab Fly Song Segmenter](https://github.com/murthylab/MurthyLab_FlySongSegmenter)
 
-The output one of the following:
+The output is one of the following:
 - *daq_segmented_new.mat*
 - *song.mat*
+
+There will also be:
+- *daq_filtered.mat*
+- *daq_segmented_without_postProcess_params.m.mat*
+
 
 ## **Process Tracking and Segmentation into h5 Files**
 This will create a file that has behavioral features, some song information, and vectors to sync video and audio.
