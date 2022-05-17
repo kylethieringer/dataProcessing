@@ -9,8 +9,8 @@ TOPDOWN=true
 
 # path to sleap models (should be accessible to cluster)
 # best practice would be to keep a copy of models within this directory rather than passing to other user's folders
-CENTROIDS_MODEL="${2:-/dataProcessing/models/training_config.json}" # add models and change path/name to whichever the correct model is 
-CONFMAPS_MODEL="${3:-/dataProcessing/models/training_config.json}" # add models and change path/name to whichever the correct model is
+CENTROIDS_MODEL="${2:-/dataProcessing/models/centroid/training_config.json}" # add models and change path/name to whichever the correct model is 
+CONFMAPS_MODEL="${3:-/dataProcessing/models/confmaps/training_config.json}" # add models and change path/name to whichever the correct model is
 
 # path to save ARRAY_ARGS_FILE created below
 # this is creating an array file to submit all tracking at once in parallel
