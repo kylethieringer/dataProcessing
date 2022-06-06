@@ -710,7 +710,7 @@ def make_expt_dataset(expt_folder, output_path=None, overwrite=False, with_audio
     print("done")
     return output_path
 
-def main():
+def main(expt_folder):
     
     expt_folder = expt_folder
 
