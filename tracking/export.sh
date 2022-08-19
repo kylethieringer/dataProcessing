@@ -32,8 +32,6 @@ do
     NUM_ARRAY_JOBS=$[$NUM_ARRAY_JOBS +1]
 
     echo "$SAVE_PATH" "$VIDEO_PATH" >> $ARRAY_ARGS_FILE
-    
-	fi
 
 done
 
