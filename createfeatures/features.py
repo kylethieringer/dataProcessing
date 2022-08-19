@@ -576,7 +576,7 @@ def encode_hdf5_strings(S):
     """
     return [np.string_(x) for x in S]
 
-def make_expt_dataset(expt_folder, output_path=None, overwrite=False, with_audio=False, min_sine_wing_ang=30, ctr_ind=1, fwd_ind=0):
+def make_expt_dataset(expt_folder, output_path=None, overwrite=False, with_audio=False, min_sine_wing_ang=30, ctr_ind=1, fwd_ind=0, skip_audio=False):
     """Gather experiment data into a single file.
 
     Args:
@@ -634,39 +634,40 @@ def make_expt_dataset(expt_folder, output_path=None, overwrite=False, with_audio
 
     print("features created")
 
-    print("loading song data")
-    # Load song.
-    if with_audio:
-        pslow, pfast, sine, pulse_bouts, sine_bouts, mix_bouts, audio = load_song(expt_folder, return_audio=True)
-    else:
-        pslow, pfast, sine, pulse_bouts, sine_bouts, mix_bouts = load_song(expt_folder, return_audio=False)
-    pslow_lims = connected_components1d(pslow, return_limits=True)
-    pfast_lims = connected_components1d(pfast, return_limits=True)
-    sine_lims = connected_components1d(sine, return_limits=True)
-
-    # Filter out invalid song (outside of video bounds).
-    s0 = sample_at_frame[0]
-    s1 = sample_at_frame[len(tracks) - 1]
-    pslow_lims = pslow_lims[(pslow_lims[:, 0] >= s0) & (pslow_lims[:, 1] <= s1)]
-    pfast_lims = pfast_lims[(pfast_lims[:, 0] >= s0) & (pfast_lims[:, 1] <= s1)]
-    sine_lims = sine_lims[(sine_lims[:, 0] >= s0) & (sine_lims[:, 1] <= s1)]
-
-    pulse_bouts = pulse_bouts[(pulse_bouts[:, 0] >= s0) & (pulse_bouts[:, 1] <= s1)]
-    sine_bouts = sine_bouts[(sine_bouts[:, 0] >= s0) & (sine_bouts[:, 1] <= s1)]
-    mix_bouts = mix_bouts[(mix_bouts[:, 0] >= s0) & (mix_bouts[:, 1] <= s1)]
-
-    # Filter out sine without minimum wing angle.
-    valid_sines = []
-    for s0, s1 in sine_lims:
-        f0 = int(frame_at_sample[s0])
-        f1 = int(frame_at_sample[s1])
-        wing_angs = np.concatenate([wingML[f0:f1], wingMR[f0:f1]])
-        if (~np.isnan(wing_angs)).any() and (np.nanmax(wing_angs) > min_sine_wing_ang):
-            valid_sines.append(True)
+    if not skip_audio:
+        print("loading song data")
+        # Load song.
+        if with_audio:
+            pslow, pfast, sine, pulse_bouts, sine_bouts, mix_bouts, audio = load_song(expt_folder, return_audio=True)
         else:
-            valid_sines.append(False)
-    valid_sines = np.stack(valid_sines)
-    sine_lims = sine_lims[valid_sines]
+            pslow, pfast, sine, pulse_bouts, sine_bouts, mix_bouts = load_song(expt_folder, return_audio=False)
+        pslow_lims = connected_components1d(pslow, return_limits=True)
+        pfast_lims = connected_components1d(pfast, return_limits=True)
+        sine_lims = connected_components1d(sine, return_limits=True)
+
+        # Filter out invalid song (outside of video bounds).
+        s0 = sample_at_frame[0]
+        s1 = sample_at_frame[len(tracks) - 1]
+        pslow_lims = pslow_lims[(pslow_lims[:, 0] >= s0) & (pslow_lims[:, 1] <= s1)]
+        pfast_lims = pfast_lims[(pfast_lims[:, 0] >= s0) & (pfast_lims[:, 1] <= s1)]
+        sine_lims = sine_lims[(sine_lims[:, 0] >= s0) & (sine_lims[:, 1] <= s1)]
+
+        pulse_bouts = pulse_bouts[(pulse_bouts[:, 0] >= s0) & (pulse_bouts[:, 1] <= s1)]
+        sine_bouts = sine_bouts[(sine_bouts[:, 0] >= s0) & (sine_bouts[:, 1] <= s1)]
+        mix_bouts = mix_bouts[(mix_bouts[:, 0] >= s0) & (mix_bouts[:, 1] <= s1)]
+
+        # Filter out sine without minimum wing angle.
+        valid_sines = []
+        for s0, s1 in sine_lims:
+            f0 = int(frame_at_sample[s0])
+            f1 = int(frame_at_sample[s1])
+            wing_angs = np.concatenate([wingML[f0:f1], wingMR[f0:f1]])
+            if (~np.isnan(wing_angs)).any() and (np.nanmax(wing_angs) > min_sine_wing_ang):
+                valid_sines.append(True)
+            else:
+                valid_sines.append(False)
+        valid_sines = np.stack(valid_sines)
+        sine_lims = sine_lims[valid_sines]
 
     # Ensure output folder exists.
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -681,12 +682,13 @@ def make_expt_dataset(expt_folder, output_path=None, overwrite=False, with_audio
         f.create_dataset("sample_at_frame", data=sample_at_frame, compression=1)
         f.create_dataset("frame_at_sample", data=frame_at_sample, compression=1)
 
-        f.create_dataset("pslow_lims", data=pslow_lims, compression=1)
-        f.create_dataset("pfast_lims", data=pfast_lims, compression=1)
-        f.create_dataset("sine_lims", data=sine_lims, compression=1)
-        f.create_dataset("pulse_bouts", data=pulse_bouts, compression=1)
-        f.create_dataset("sine_bouts", data=sine_bouts, compression=1)
-        f.create_dataset("mix_bouts", data=mix_bouts, compression=1)
+        if not skip_audio:
+            f.create_dataset("pslow_lims", data=pslow_lims, compression=1)
+            f.create_dataset("pfast_lims", data=pfast_lims, compression=1)
+            f.create_dataset("sine_lims", data=sine_lims, compression=1)
+            f.create_dataset("pulse_bouts", data=pulse_bouts, compression=1)
+            f.create_dataset("sine_bouts", data=sine_bouts, compression=1)
+            f.create_dataset("mix_bouts", data=mix_bouts, compression=1)
 
         if with_audio:
             f.create_dataset("audio", data=audio, compression=1)
@@ -712,8 +714,6 @@ def make_expt_dataset(expt_folder, output_path=None, overwrite=False, with_audio
 
 def main(expt_folder):
     
-    expt_folder = expt_folder
-
     #save output file in experiment folders (can also specify different path if you want)
     if not expt_folder.endswith('.h5'):
         output_path = expt_folder
@@ -723,7 +723,7 @@ def main(expt_folder):
     # set this to true if you want to include the raw audio in the features h5 file
     withAudio = False
 
-    make_expt_dataset(expt_folder, output_path=output_path, with_audio=withAudio)
+    make_expt_dataset(expt_folder, output_path=output_path, with_audio=withAudio, skip_audio=True)
 
 
 if __name__ == "__main__":
