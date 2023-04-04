@@ -439,7 +439,7 @@ def compute_features(fThx, mThx, fHd, mHd):
     # mV = np.sqrt(np.sum(mV_vec ** 2, axis=1))
     # fV = np.sqrt(np.sum(fV_vec ** 2, axis=1))
 
-    # Unit vector joining the head to the thorax or heading.
+    # Vector of thorax to head
     mDir = mHd - mThx
     fDir = fHd - fThx
     mDir_unit = mDir / np.linalg.norm(mDir, axis=1, keepdims=True)
@@ -474,16 +474,16 @@ def compute_features(fThx, mThx, fHd, mHd):
     fRS = signed_angle(fDir[0:(-1 - delt), :], fDir[delt:-1, :])
     fRS = np.pad(fRS, (1, 1), mode="edge")
 
-    # Angular velocity (of the thorax)
     # Vector joining one fly's thorax to the other's
-    mfDir = fHd - mThx
-    fmDir = mHd - fThx
+    mfDir = fThx - mHd
+    fmDir = mThx - fHd
+
     fmDir_unit = fmDir / np.linalg.norm(fmDir, axis=1, keepdims=True)
     mfDir_unit = mfDir / np.linalg.norm(mfDir, axis=1, keepdims=True)
 
     # Angle subtended by one fly on the other fly
-    mfAng = signed_angle(mDir, fmDir)
-    fmAng = signed_angle(fDir, mfDir)
+    mfAng = signed_angle(mDir, mfDir)
+    fmAng = signed_angle(fDir, fmDir)
 
     # Velocity in the direction of the other fly.
     fmFV = np.sum(fV_vec * fmDir_unit, axis=1)
