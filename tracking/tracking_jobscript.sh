@@ -4,7 +4,7 @@
 #SBATCH --mem=64000
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:1
-#SBATCH --output='logs/tracking.%A.%a.log'
+#SBATCH --output='logs/track.%A.%a.log'
 ##SBATCH -N 1
 ##SBATCH --ntasks-per-socket=1
 ##SBATCH --ntasks-per-node=1
@@ -46,6 +46,4 @@ save_path="${linearray[2]}"
 video_path="${linearray[3]}"
 
 # run inference on videos and then clean the tracks right afterwards. Make sure to specify how many tracks the cleaner should expect
-
-python -m sleap.nn.inference "$video_path" -m "$MODEL_1" -m "$MODEL_2" -o "$save_path" --tracking.tracker simple --tracking.similarity centroid --tracking.matching greedy --tracking.window 5
-python -m sleap.info.trackcleaner "$save_path" -c 2 # c = number of animals (2 for pairs 1 for solo animals)
+sleap-track "$video_path" -m "$MODEL_1" -m "$MODEL_2" -o "$save_path" --tracking.tracker simple --tracking.similarity centroid --tracking.matching greedy --tracking.window 5 --tracking.target_instance_count 2 tracking.post_coonect_single_breaks 1 --tracking.clean_instance_count 2

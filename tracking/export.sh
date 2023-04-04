@@ -4,7 +4,7 @@
 
 JOB_SCRIPT="export_jobscript.sh"
 
-SAVE_FOLDER="/dataProcessing/tracking"
+SAVE_FOLDER="/tigress/MMURTHY/Kyle/code/dataProcessing/tracking"
 mkdir -p "$SAVE_FOLDER"
 
 # Paths to all video files (ignoring hidden dot files)
@@ -21,12 +21,12 @@ NUM_ARRAY_JOBS=0
 #for VIDEO_PATH in $VIDEO_PATHS    # only for wildcards not list
 for VIDEO_PATH in "${VIDEO_PATHS[@]}"
 do
-    SAVE_PATH="$(dirname $VIDEO_PATH)/$(basename $VIDEO_PATH).inference.cleaned.proofread.slp"
-    TEST_PATH="$(dirname $VIDEO_PATH)/$(basename $VIDEO_PATH).inference.cleaned.proofread.tracking.h5"
+    SAVE_PATH="$(dirname $VIDEO_PATH)/inference.cleaned.proofread.slp"
+    TEST_PATH="$(dirname $VIDEO_PATH)/inference.cleaned.proofread.tracking.h5"
 
     if [ -f "$TEST_PATH" ]; then
             echo "Exists: $TEST_PATH"
-            continue
+            # continue
     fi
 
     NUM_ARRAY_JOBS=$[$NUM_ARRAY_JOBS +1]

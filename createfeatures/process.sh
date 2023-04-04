@@ -4,7 +4,7 @@
 
 JOB_SCRIPT="process_jobscript.sh"
 
-SAVE_FOLDER="/dataProcessing/createfeatures"
+SAVE_FOLDER="/tigress/MMURTHY/Kyle/code/dataProcessing/createfeatures"
 mkdir -p "$SAVE_FOLDER"
 
 # Paths to all video files (ignoring hidden dot files)
@@ -33,7 +33,6 @@ do
 
     echo "$EXPT_FOLDER" "$VIDEO_PATH" >> $ARRAY_ARGS_FILE
     
-	fi
 
 done
 

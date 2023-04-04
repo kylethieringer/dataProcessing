@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=04:59:00
+#SBATCH --time=0:20:00
 #SBATCH --mem=64000
 #SBATCH --cpus-per-task=8
 #SBATCH --output='logs/ftrs.%A.%a.log'
