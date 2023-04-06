@@ -31,7 +31,7 @@ def load_tracks(expt_folder):
         expt_folder: Path to experiment folder containing inference.cleaned.proofread.tracking.h5.
     Returns:
         Tuple of (tracks, node_names).
-        tracks contains the pose estimates in an array of shape (frame, joint, xy, fly).
+        tracks contain the pose estimates in an array of shape (frame, joint, xy, fly).
         The last axis is ordered as [female, male].
         node_names contains a list of string names for the joints.
     """
@@ -39,6 +39,8 @@ def load_tracks(expt_folder):
         track_file = os.path.join(expt_folder, "inference.cleaned.proofread.tracking.h5")
         if not os.path.exists(track_file):
             track_file = os.path.join(expt_folder, '000000.mp4.inference.cleaned.proofread.tracking.h5')
+        if not os.path.exists(track_file):
+            track_file = os.path.join(expt_folder, os.path.basename(expt_folder)+'.tracking.h5')
         if not os.path.exists(track_file):
             print('No proofread tracking file found. Using ".cleaned.tracking.h5" instead')
             track_file = os.path.join(expt_folder, os.path.basename(expt_folder)+'.000000.mp4.inference.cleaned.tracking.h5')
